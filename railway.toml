@@ -3,8 +3,9 @@ builder = "NIXPACKS"
 buildCommand = "composer install --no-dev --optimize-autoloader"
 
 [deploy]
+preDeployCommand = "php artisan migrate --force"
 startCommand = "bash scripts/start.sh"
-healthcheckPath = "/up"
-healthcheckTimeout = 300
+healthcheckPath = "/health"
+healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
