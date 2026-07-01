@@ -12,11 +12,13 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        AdminUser::create([
-            'name' => 'Admin',
-            'email' => 'admin@quotes.com',
-            'password' => 'password',
-        ]);
+        AdminUser::updateOrCreate(
+            ['email' => 'admin@quotes.com'],
+            [
+                'name' => 'Admin',
+                'password' => 'password',
+            ]
+        );
 
         $categories = [
             ['name' => 'Gujarati Quotes', 'slug' => 'gujarati-quotes'],
@@ -37,23 +39,27 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($categories as $index => $cat) {
-            $category = Category::create([
-                'name' => $cat['name'],
-                'slug' => $cat['slug'],
-                'status' => true,
-            ]);
+            $category = Category::updateOrCreate(
+                ['slug' => $cat['slug']],
+                [
+                    'name' => $cat['name'],
+                    'status' => true,
+                ]
+            );
 
-            Quote::create([
-                'category_id' => $category->id,
-                'title' => 'Sample ' . $cat['name'],
-                'slug' => Str::slug('sample-' . $cat['name']),
-                'quote_text' => $sampleQuotes[$index],
-                'hashtags' => '#quotes #motivation #gujarati #status',
-                'meta_title' => 'Sample ' . $cat['name'] . ' | Quotes Hub',
-                'meta_description' => 'Beautiful sample quote from ' . $cat['name'] . ' category on Quotes Hub.',
-                'status' => true,
-                'views' => rand(50, 1000),
-            ]);
+            Quote::updateOrCreate(
+                ['slug' => Str::slug('sample-' . $cat['name'])],
+                [
+                    'category_id' => $category->id,
+                    'title' => 'Sample ' . $cat['name'],
+                    'quote_text' => $sampleQuotes[$index],
+                    'hashtags' => '#quotes #motivation #gujarati #status',
+                    'meta_title' => 'Sample ' . $cat['name'] . ' | Quotes Hub',
+                    'meta_description' => 'Beautiful sample quote from ' . $cat['name'] . ' category on Quotes Hub.',
+                    'status' => true,
+                    'views' => rand(50, 1000),
+                ]
+            );
         }
     }
 }
