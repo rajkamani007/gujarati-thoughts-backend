@@ -3,6 +3,14 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+$databaseUrl = env('DB_URL') ?: env('DATABASE_URL') ?: env('MYSQL_URL');
+$databaseHost = env('DB_HOST') ?: env('MYSQLHOST');
+$databasePort = is_numeric((string) env('DB_PORT')) ? env('DB_PORT') : env('MYSQLPORT', '3306');
+$databaseName = env('DB_DATABASE') ?: env('MYSQLDATABASE');
+$databaseUser = env('DB_USERNAME') ?: env('MYSQLUSER');
+$databasePassword = env('DB_PASSWORD') ?: env('MYSQLPASSWORD');
+$defaultConnection = env('DB_CONNECTION') ?: (($databaseUrl || $databaseHost) ? 'mysql' : 'sqlite');
+
 return [
 
     /*
@@ -17,7 +25,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => $defaultConnection,
 
     /*
     |--------------------------------------------------------------------------
@@ -46,12 +54,12 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => $databaseUrl,
+            'host' => $databaseHost ?: '127.0.0.1',
+            'port' => $databasePort,
+            'database' => $databaseName ?: 'laravel',
+            'username' => $databaseUser ?: 'root',
+            'password' => $databasePassword ?: '',
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
